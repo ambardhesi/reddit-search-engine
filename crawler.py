@@ -1,58 +1,62 @@
 import requests
 from bs4 import BeautifulSoup
-import argparse
-import os
-import binascii
 import time
+import os
+import base64 
+import argparse
+
+def downloadRedditUrl(url): 
+    headers = {
+            'User-Agent' : 'SearchingReddit bot version 0.1' 
+            }
+    r = requests.get(url, headers = headers)
+    if r.status_code != 200:
+        raise Exception("Not okay! Status code : {}".format(r.status_code))
+    return r.text
+
+def parseData(html):
+    bs = BeautifulSoup(html)
+    return bs.select('div.usertext-body')[1].text
+
 
 class Crawler(object):
-    def __init__ (self, starting_url, storage_dir):
-        self.starting_url = starting_url
+    def __init__(self, start_url, storage_dir):
+        self.start_url = start_url
         self.storage_dir = storage_dir
-
-    def download_url(self, url):
-        headers = { 'User-Agent' : 'Searching Reddit bot'}
-        r = requests.get(url, headers)
-        if r.status_code != 200:
-            raise Exception ("Error! Status code {}".format(r.status_code))
-        return r.text
-
-    def absolute_url(self, link):
-        return ('https://www.reddit.com' + link)
-
-    def TextParser(self, html):
-        bs = BeautifulSoup(html)
-        return bs.select('div.usertext-body')[1].text
+    
+    def make_absolute_url(self, url):
+        return ("https://reddit.com" + url)
 
     def crawl(self):
-        currentUrl = self.starting_url
+        current_page_url = self.start_url
         while True:
             post_links = []
-            time.sleep(1)
-            print "Currently on page", currentUrl
-            currentUrl_text = self.download_url(currentUrl)  
-            bs = BeautifulSoup(currentUrl_text)
-            all_post_links = bs.findAll('a', { "class" : "title"})
-            
+            crawled_urls = 0
+            print "Current page is {}".format(current_page_url)
+            current_page = downloadRedditUrl(current_page_url)
+            bs = BeautifulSoup(current_page)
+            all_post_links = bs.findAll("a", attrs = {'class' : 'title'})
             try:
                 for link in all_post_links:
-                    if link["href"].startswith("/r/Gunners"):
-                        post_links.append(self.absolute_url(link["href"])) 
-
+                    if link["href"].startswith('/r/Gunners'):
+                        post_links.append(self.make_absolute_url(link["href"]))
+            #post_links = [self.make_absolute_url(link["href"]) for link in all_post_links]
                 for link in post_links:
-                    print "ON PAGE : ", link
-                    parsedText = self.TextParser(self.download_url(link)) 
-                    file_name = os.path.join(self.storage_dir, binascii.hexlify(link))
-                    opened_file = open(file_name, "w")
-                    opened_file.write(parsedText.encode('utf8'))
+                    print "Crawling link {}".format(link)
+                    text = parseData(downloadRedditUrl(link))  
+                    stored_text_file_name = os.path.join(self.storage_dir, base64.b16encode(link))
+                    stored_text_file = open(stored_text_file_name, "w")
+                    stored_text_file.write(text.encode('utf8'))
+                    crawled_urls += 1
                     time.sleep(2)
             except Exception:
-                print "An error occured :("
+                print "An error occured!"                    
 
-            next_page_url = bs.find('a', {"rel" : "next"})["href"]
-            currentUrl = next_page_url
+            next_page_url = bs.find('a', attrs = {'rel' : 'next'})['href']           
+            current_page_url = next_page_url
+            print "Total crawled URLS from this page {}".format(crawled_urls)
             time.sleep(2)
-    
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("-s", "--start_url", required = True,
