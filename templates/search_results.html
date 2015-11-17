@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class = "container"> 
-  <h1>User requested {{query}}  </h1>
+  <h1>User searched for "{{query}}"  </h1>
   <ul>
     {% for url in urls %}
       <li><a href="{{url}}">{{url}}</a></li>
