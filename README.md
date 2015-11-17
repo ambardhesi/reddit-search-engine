@@ -24,3 +24,5 @@ Finally, run the command to set up the server as follows :
 python webapp_ui.py
 ```
 and open the link http://127.0.0.1:5000/ in your browser. 
+![alt text](screenshots/Image1.png)
+![alt text](screenshots/Image2.png)
