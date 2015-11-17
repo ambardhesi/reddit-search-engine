@@ -1,5 +1,5 @@
 # reddit-search-engine
-A basic search engine implemented using Flask and Bootstrap to search subreddit /r/Gunners.
+A basic self post only search engine for the subreddit /r/Gunners, implemented using Flask and Bootstrap.
 ##Usage :
 *Clone the repository
 ```
