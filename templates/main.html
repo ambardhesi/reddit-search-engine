@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Reddit /r/Gunners Search Engine</title>	
+<link href = "{{url_for('static', filename = 'css/bootstrap.css')}}" rel = "stylesheet">
+</head>
+
+{% block body %}
+<body>
+<img class="center-block img-responsive;"style = "max-width:250px; margin-bottom: 5px;" src = "{{url_for('static', filename = 'images/search-engine-advertising.png')}}"> 
+
+<div class="container">
+<form method = "post"> 
+    <label for="UserSearchBox">What would you like to search /r/Gunners for?</label>
+    <input type="text" class="form-control" placeholder="Enter your search items here" name = "search" value="{{request.form.search}}">
+ <input class ="btn btn-default" type = "submit" value = "Search">
+</form>
+</div>
+</body>
+{% endblock %}
+
+</html>
+

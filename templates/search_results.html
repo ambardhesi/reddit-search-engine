@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Search Results</title>	
+<link href = "{{url_for('static', filename = 'css/bootstrap.css')}}" rel = "stylesheet">
+</head>
+
+{% block body %}
+<div class = "container"> 
+  <h1>User requested {{query}}  </h1>
+  <ul>
+    {% for url in urls %}
+      <li><a href="{{url}}">{{url}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
+
+</html>
+
