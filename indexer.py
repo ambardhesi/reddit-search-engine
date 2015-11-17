@@ -22,7 +22,7 @@ class Indexer(object):
         self.save_on_disk(self.storage_dir)
     
     def add_document(self, url, text):
-        self.doc_count += 1
+        self.doc_count += 1 
         self.url_to_id[url] = self.doc_count
         self.forward_index[self.doc_count] = text
         for position, word in enumerate(text):
